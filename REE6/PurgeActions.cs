@@ -68,6 +68,8 @@ namespace REE6
             }
             // Recreate Voice Channels
             await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Creating voice channels");
+            IUserMessage voiceChannelFailsMessage = await statusChannel.SendMessageAsync("0 voice channels could not be put in a category");
+            int voiceChannelFails = 0;
             for (int i = voiceChannelNum; i > 0; i--)
             {
                 ulong randomCategoryId = categoryIds[random.Next(categoryNum)];
@@ -79,7 +81,8 @@ namespace REE6
                 }
                 catch
                 {
-                    await statusChannel.SendMessageAsync("A voice channel could not be put in a category");
+                    voiceChannelFails++;
+                    await voiceChannelFailsMessage.ModifyAsync(msg => msg.Content = voiceChannelFails + " voice channel(s) could not be put in a category.");
                 }
             }
 
@@ -103,6 +106,8 @@ namespace REE6
 
             // Purge all existing roles
             IUserMessage statusMessage = await statusChannel.SendMessageAsync("REEEEEEEEEE! Purging roles...");
+            IUserMessage roleFailsMessage = await statusChannel.SendMessageAsync("Failed to purge 0 roles");
+            int roleFails = 0;
             foreach (IRole role in guild.Roles)
             {
                 try
@@ -111,7 +116,8 @@ namespace REE6
                 }
                 catch
                 {
-                    await statusChannel.SendMessageAsync("Failed to purge a role");
+                    roleFails++;
+                    await roleFailsMessage.ModifyAsync(msg => msg.Content = "Failed to purge " + roleFails + " role(s)");
                     roleNum -= 1;
                 }
             }
