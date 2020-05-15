@@ -9,7 +9,7 @@ namespace REE6
     {
         public static async Task ChannelPurge(IGuild guild)
         {
-            ITextChannel statusChannel = await guild.CreateTextChannelAsync("REE6 Purge Progress", channel => channel.Position = 1);
+            ITextChannel statusChannel = await guild.CreateTextChannelAsync("REE6 Channel Purge Progress", channel => channel.Position = 1);
 
             await statusChannel.SendMessageAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE Channel Purge Operation Starting...");
             int categoryNum = guild.GetCategoriesAsync().Result.Count;
@@ -84,6 +84,51 @@ namespace REE6
             }
 
             await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Channel Purge Operation Complete!");
+            await statusChannel.SendMessageAsync("Deleting channel in 3 seconds...");
+            Timer terminate = new Timer(3000);
+            terminate.AutoReset = false;
+            terminate.Elapsed += new ElapsedEventHandler(delegate (object sender, ElapsedEventArgs e) { statusChannel.DeleteAsync(); });
+            terminate.Start();
+        }
+
+        public static async Task RolePurge(IGuild guild)
+        {
+            ITextChannel statusChannel = await guild.CreateTextChannelAsync("REE6 Role Purge Progress", channel => channel.Position = 1);
+
+            await statusChannel.SendMessageAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE Role Purge Operation Starting...");
+            int roleNum = guild.Roles.Count;
+
+            Random random = new Random();
+            Color[] roleColors = new Color[] { new Color(255, 0, 0), new Color(1, 1, 1) };
+
+            // Purge all existing roles
+            IUserMessage statusMessage = await statusChannel.SendMessageAsync("REEEEEEEEEE! Purging roles...");
+            foreach (IRole role in guild.Roles)
+            {
+                try
+                {
+                    await role.DeleteAsync();
+                }
+                catch
+                {
+                    await statusChannel.SendMessageAsync("Failed to purge a role");
+                    roleNum -= 1;
+                }
+            }
+
+            // Give everyone admin
+            guild.EveryoneRole.Permissions.Modify(administrator: true);
+            // Recreate all roles with admin
+            for (int i = roleNum; i > 0; i--)
+            {
+                IRole role = await guild.CreateRoleAsync("REEEEEEEEEE Role! REEEEEEEEEE! Role!", GuildPermissions.All, roleColors[random.Next(2)]);
+                foreach (IGuildUser user in await guild.GetUsersAsync(CacheMode.AllowDownload))
+                {
+                    await user.AddRoleAsync(role);
+                }
+            }
+
+            await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Role Purge Operation Complete!");
             await statusChannel.SendMessageAsync("Deleting channel in 3 seconds...");
             Timer terminate = new Timer(3000);
             terminate.AutoReset = false;

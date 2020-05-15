@@ -32,6 +32,23 @@ namespace REE6
         {
             await ReplyAsync("Purging everything...");
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            await PurgeActions.RolePurge(Context.Guild);
+            await PurgeActions.ChannelPurge(Context.Guild);
+        }
+
+        [Command("roles")]
+        public async Task PurgeRole()
+        {
+            await ReplyAsync("Purging roles...");
+            await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            await PurgeActions.RolePurge(Context.Guild);
+        }
+
+        [Command("channels")]
+        public async Task PurgeChannels()
+        {
+            await ReplyAsync("Purging channels...");
+            await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
             await PurgeActions.ChannelPurge(Context.Guild);
         }
     }
