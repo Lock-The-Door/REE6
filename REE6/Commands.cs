@@ -34,6 +34,7 @@ namespace REE6
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
             await PurgeActions.RolePurge(Context.Guild);
             await PurgeActions.ChannelPurge(Context.Guild);
+            await PurgeActions.Unban(Context.Guild);
         }
 
         [Command("roles")]

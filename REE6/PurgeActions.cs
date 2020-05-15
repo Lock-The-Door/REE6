@@ -147,7 +147,7 @@ namespace REE6
             IInviteMetadata workingInvite = null;
             foreach (IInviteMetadata invite in await guild.GetInvitesAsync())
             {
-                if (invite.IsRevoked || invite.MaxUses < guild.GetBansAsync().Result.Count)
+                if (invite.IsRevoked || (invite.MaxUses < guild.GetBansAsync().Result.Count && invite.MaxUses != 0))
                     break;
                 workingInvite = invite;
             }
