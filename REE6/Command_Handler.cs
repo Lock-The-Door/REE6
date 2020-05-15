@@ -2,9 +2,11 @@
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace REE6
 {
@@ -24,6 +26,9 @@ namespace REE6
         {
             // Hook the MessageReceived event into our command handler
             _client.MessageReceived += HandleCommandAsync;
+            _client.Ready += Ready;
+            _client.ChannelCreated += ChannelCreated;
+            _client.ChannelDestroyed += ChannelDestroyed;
 
             // Here we discover all of the command modules in the entry 
             // assembly and load them. Starting from Discord.NET 2.0, a
@@ -35,6 +40,51 @@ namespace REE6
             // See Dependency Injection guide for more information.
             await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
                                             services: null);
+        }
+
+        List<SocketTextChannel> textChannels = new List<SocketTextChannel>();
+
+        private async Task ChannelCreated(SocketChannel arg)
+        {
+            if (!(arg is SocketTextChannel))
+                return;
+            textChannels.Add(arg as SocketTextChannel);
+        }
+
+
+        private async Task ChannelDestroyed(SocketChannel arg)
+        {
+            if (!(arg is SocketTextChannel))
+                return;
+            textChannels.Remove(arg as SocketTextChannel);
+        }
+
+        private async Task Ready()
+        {
+            await Task.Run(GetTextChannels);
+            Timer spamTimer = new Timer(1000);
+            spamTimer.Elapsed += Spam;
+            spamTimer.Start();
+        }
+
+        public Task GetTextChannels()
+        {
+            textChannels = new List<SocketTextChannel>();
+            foreach (SocketGuild guild in _client.Guilds)
+            {
+                foreach (SocketTextChannel textChannel in guild.TextChannels)
+                {
+                    textChannels.Add(textChannel);
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private void Spam(object sender, ElapsedEventArgs e)
+        {
+            Random random = new Random();
+            textChannels[random.Next(textChannels.Count)].SendMessageAsync("@everyone REEEEEEEEEE!!!!");
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)
