@@ -60,6 +60,7 @@ namespace REE6
                 try
                 {
                     await textChannel.ModifyAsync(channel => channel.CategoryId = randomCategoryId);
+                    await textChannel.CreateInviteAsync(isUnique: true);
                 }
                 catch
                 {
