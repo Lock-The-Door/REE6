@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RootNamespace>Discord_Bot_Template</RootNamespace>
+    <RootNamespace>REE6</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Discord_Bot_Template
+namespace REE6
 {
     public class Command_Handler
     {

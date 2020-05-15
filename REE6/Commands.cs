@@ -1,7 +1,7 @@
 ﻿using Discord.Commands;
 using System.Threading.Tasks;
 
-namespace Discord_Bot_Template
+namespace REE6
 {
     [Group("tests")]
     [RequireOwner(ErrorMessage = "This is a test command and is not intended for public use", Group = "Owner command")]
@@ -20,6 +20,19 @@ namespace Discord_Bot_Template
         public async Task InputTest(string input)
         {
             await Context.Channel.SendMessageAsync($"You said: \"{input}\"");
+        }
+    }
+
+    [Group("purge")]
+    [Summary("Purge Commands")]
+    public class Purge : ModuleBase<SocketCommandContext>
+    {
+        [Command("all")]
+        public async Task PurgeAll()
+        {
+            await ReplyAsync("Purging everything...");
+            await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            await PurgeActions.ChannelPurge(Context.Guild);
         }
     }
 }

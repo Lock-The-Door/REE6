@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 
-namespace Discord_Bot_Template
+namespace REE6
 {
     public class Program
     {
@@ -33,7 +33,7 @@ namespace Discord_Bot_Template
             _client.Log += Log;
 
             await _client.LoginAsync(TokenType.Bot,
-                Environment.GetEnvironmentVariable("DiscordToken"));
+                Environment.GetEnvironmentVariable("REE6_API_TOKEN", EnvironmentVariableTarget.User));
 
             await _client.StartAsync();
 
