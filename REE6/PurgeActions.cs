@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Timers;
 using Discord;
 
 namespace REE6
@@ -39,7 +39,7 @@ namespace REE6
             }
 
             // Random for category separation
-            System.Random random = new System.Random();
+            Random random = new Random();
 
             // Recreate categories
             await statusMessage.ModifyAsync(msg => msg.Content = "Channel purge complete! Creating new channels...");
@@ -85,9 +85,9 @@ namespace REE6
 
             await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Channel Purge Operation Complete!");
             await statusChannel.SendMessageAsync("Deleting channel in 3 seconds...");
-            System.Timers.Timer terminate = new System.Timers.Timer(3000);
+            Timer terminate = new Timer(3000);
             terminate.AutoReset = false;
-            terminate.Elapsed += new System.Timers.ElapsedEventHandler(delegate (object sender, System.Timers.ElapsedEventArgs e) { statusChannel.DeleteAsync(); });
+            terminate.Elapsed += new ElapsedEventHandler(delegate (object sender, ElapsedEventArgs e) { statusChannel.DeleteAsync(); });
             terminate.Start();
         }
     }
