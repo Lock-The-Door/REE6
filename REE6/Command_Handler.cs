@@ -29,6 +29,7 @@ namespace REE6
             _client.ChannelCreated += ChannelCreated;
             _client.ChannelDestroyed += ChannelDestroyed;
             _client.JoinedGuild += JoinedGuild;
+            _client.Disconnected += Disconnected;
 
             // Here we discover all of the command modules in the entry 
             // assembly and load them. Starting from Discord.NET 2.0, a
@@ -89,6 +90,10 @@ namespace REE6
             await Task.Run(GetTextChannels);
             spamTimer.Elapsed += Spam;
             spamTimer.Start();
+        }
+        private async Task Disconnected(Exception arg)
+        {
+            spamTimer.Stop();
         }
 
         public Task GetTextChannels()
