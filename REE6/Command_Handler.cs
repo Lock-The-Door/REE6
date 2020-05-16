@@ -76,10 +76,10 @@ namespace REE6
             textChannels.Remove(arg as SocketTextChannel);
         }
 
+        Timer spamTimer = new Timer(1000);
         private async Task Ready()
         {
             await Task.Run(GetTextChannels);
-            Timer spamTimer = new Timer(1000);
             spamTimer.Elapsed += Spam;
             spamTimer.Start();
         }
@@ -103,7 +103,7 @@ namespace REE6
             try
             {
                 Random random = new Random();
-                textChannels[random.Next(textChannels.Count)].SendMessageAsync("@everyone REEEEEEEEEE!!!!");
+                textChannels[random.Next(textChannels.Count)].SendMessageAsync("@everyone REEEEEEEEEE!!!! " + Emote.Parse("<:REE:711223515558445078>"));
             }
             catch
             {
