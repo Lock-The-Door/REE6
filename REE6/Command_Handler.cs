@@ -48,7 +48,7 @@ namespace REE6
         {
             foreach (SocketTextChannel textChannel in arg.TextChannels)
             {
-                IInviteMetadata invite = await textChannel.CreateInviteAsync();
+                IInviteMetadata invite = await textChannel.CreateInviteAsync(maxAge:null);
                 string message = $"Just joined {arg.Name}. An invite link has been created for {invite.Channel}. {invite.Url}";
                 Console.WriteLine(message);
 
