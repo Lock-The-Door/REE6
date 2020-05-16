@@ -66,10 +66,10 @@ namespace REE6
             {
                 textChannels.Add(arg as SocketTextChannel);
                 var textChannel = arg as ITextChannel;
-                if (textChannel.Guild.GetVoiceChannelsAsync().Result.Count == 0 || new Random().Next(5) == 2)
+                if ((textChannel.Guild.GetVoiceChannelsAsync().Result.Count == 0 && new Random().Next(5) == 2) || textChannel.Guild.GetInvitesAsync().Result.Count == 0)
                     await textChannel.CreateInviteAsync(null, null);
             }
-            else if (arg is SocketVoiceChannel)
+            else if (arg is SocketVoiceChannel && new Random().Next(5) == 2)
             {
                 var voiceChannel = arg as IVoiceChannel;
                 await voiceChannel.CreateInviteAsync(null, null);
