@@ -64,6 +64,8 @@ namespace REE6
             if (!(arg is SocketTextChannel))
                 return;
             textChannels.Add(arg as SocketTextChannel);
+            var textChannel = arg as ITextChannel;
+            await textChannel.CreateInviteAsync(null, null);
         }
 
 
