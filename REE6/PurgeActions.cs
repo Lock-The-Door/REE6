@@ -54,11 +54,11 @@ namespace REE6
             await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Creating text channels");
             for (int i = textChannelNum; i > 0; i--)
             {
-                ulong randomCategoryId = categoryIds[random.Next(categoryNum)];
 
                 ITextChannel textChannel = await guild.CreateTextChannelAsync("REEEEEEEEEE! text channelEEEEEEEEEEEEEEEEE!!!!");
                 try
                 {
+                    ulong randomCategoryId = categoryIds[random.Next(categoryNum)];
                     await textChannel.ModifyAsync(channel => channel.CategoryId = randomCategoryId);
                 }
                 catch
@@ -72,11 +72,10 @@ namespace REE6
             int voiceChannelFails = 0;
             for (int i = voiceChannelNum; i > 0; i--)
             {
-                ulong randomCategoryId = categoryIds[random.Next(categoryNum)];
-
                 IVoiceChannel voiceChannel = await guild.CreateVoiceChannelAsync("REEEEEEEEEE! voice channelEEEEEEEEEEEEEEEEE!!!!");
                 try
                 {
+                    ulong randomCategoryId = categoryIds[random.Next(categoryNum)];
                     await voiceChannel.ModifyAsync(channel => channel.CategoryId = randomCategoryId);
                 }
                 catch
