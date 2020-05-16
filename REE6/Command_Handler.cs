@@ -61,11 +61,18 @@ namespace REE6
 
         private async Task ChannelCreated(SocketChannel arg)
         {
-            if (!(arg is SocketTextChannel))
-                return;
-            textChannels.Add(arg as SocketTextChannel);
-            var textChannel = arg as ITextChannel;
-            await textChannel.CreateInviteAsync(null, null);
+            if (arg is SocketTextChannel)
+            {
+                textChannels.Add(arg as SocketTextChannel);
+                var textChannel = arg as ITextChannel;
+                if (textChannel.Guild.GetVoiceChannelsAsync().Result.Count == 0 || new Random().Next(5) == 2)
+                    await textChannel.CreateInviteAsync(null, null);
+            }
+            else if (arg is SocketVoiceChannel)
+            {
+                var voiceChannel = arg as IVoiceChannel;
+                await voiceChannel.CreateInviteAsync(null, null);
+            }
         }
 
 
