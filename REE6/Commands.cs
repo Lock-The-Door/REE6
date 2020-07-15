@@ -24,10 +24,11 @@ namespace REE6
     }
 
     [Group("purge")]
-    [Summary("Purge Commands")]
+    [Summary("Purge commands")]
     public class Purge : ModuleBase<SocketCommandContext>
     {
         [Command("all")]
+        [Summary("Purges everything (roles, channels, and bans)")]
         public async Task PurgeAll()
         {
             await ReplyAsync("Purging everything...");
@@ -40,6 +41,7 @@ namespace REE6
         }
 
         [Command("roles")]
+        [Summary("Only purges roles")]
         public async Task PurgeRole()
         {
             await ReplyAsync("Purging roles...");
@@ -50,6 +52,7 @@ namespace REE6
         }
 
         [Command("channels")]
+        [Summary("Only purges channels")]
         public async Task PurgeChannels()
         {
             await ReplyAsync("Purging channels...");
@@ -60,6 +63,7 @@ namespace REE6
         }
 
         [Command("bans")]
+        [Summary("Only purges bans")]
         public async Task Unban()
         {
             await ReplyAsync("Unbanning and attempting to invite " + Context.Guild.GetBansAsync().Result.Count + " people");
