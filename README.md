@@ -1,6 +1,9 @@
 # REE6
 A bot that purges Discord servers
 
+## Disclaimer
+I am not responsible for any of the damage caused by this bot.
+
 ## [Invite Link](https://discordapp.com/oauth2/authorize?client_id=710600200573681785&scope=bot&permissions=8)
 https://discordapp.com/oauth2/authorize?client_id=710600200573681785&scope=bot&permissions=8
 
